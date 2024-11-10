@@ -18,24 +18,50 @@ class BirdIdentifier:
             "Size", "Habitat(s)"
         ]
 
+    def can_feature_split_further(self, current_birds, feature):
+        possible_values = self.get_possible_values(current_birds, feature)
+        current_size = len(current_birds)
+        
+        for value in possible_values:
+            filtered_birds = self.filter_birds(current_birds, feature, value)
+            if len(filtered_birds) < current_size and len(filtered_birds) > 0:
+                return True
+        return False
+    
     def find_best_feature(self, current_birds, used_features):
         best_score = float('inf')
         best_feature = None
         
         for feature in self.features:
             if feature not in used_features:
+                if not self.can_feature_split_further(current_birds, feature):
+                    continue
+                    
                 possible_values = self.get_possible_values(current_birds, feature)
+                if not possible_values:
+                    continue
+                
                 total_remaining = 0
+                max_group_size = 0
                 for value in possible_values:
                     matching_birds = self.filter_birds(current_birds, feature, value)
-                    total_remaining += len(matching_birds)
+                    group_size = len(matching_birds)
+                    total_remaining += group_size
+                    max_group_size = max(max_group_size, group_size)
                 
-                avg_remaining = total_remaining / len(possible_values) if possible_values else float('inf')
+                avg_remaining = total_remaining / len(possible_values)
+                score = avg_remaining + max_group_size
                 
-                if avg_remaining < best_score:
-                    best_score = avg_remaining
+                if score < best_score:
+                    best_score = score
                     best_feature = feature
         
+        if not best_feature:
+            for feature in self.features:
+                if (feature not in used_features and 
+                    self.can_feature_split_further(current_birds, feature)):
+                    return feature
+                    
         return best_feature
 
     def filter_birds(self, current_birds, feature, value):
@@ -137,7 +163,7 @@ def loop_search(identifier):
     summary = defaultdict(list)
     not_found = defaultdict(list)
     print('----------Simulation start--------------')
-    for _ in range(1000):
+    for _ in range(1000000):
         results, iterations = identifier.identify_bird(True)
         guessed_bird = identifier.curr_bird.iloc[0]
         # print('----------results---------')
