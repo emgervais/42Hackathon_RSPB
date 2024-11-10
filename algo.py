@@ -2,6 +2,7 @@ import pandas as pd
 import sqlite3
 import random
 import numpy as np
+from collections import defaultdict
 
 db = sqlite3.connect('bird_database.db')
 cursor = db.cursor()
@@ -43,8 +44,6 @@ def filterSql(curr_guess):
             query += f" AND ({' AND '.join(conditions)})"
     return cursor.execute(query, params).fetchall()
 
-
-from collections import defaultdict
 results = defaultdict(list)
 not_found = defaultdict(list)
 print('---------Simulation beggining------------')
