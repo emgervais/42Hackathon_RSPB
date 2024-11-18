@@ -50,6 +50,7 @@ This will start the server and it will listen on the port specified in your .env
 The current available endpoint is:
 
    GET /birds
+   
    GET /test
 
 ### 6. Troubleshooting
