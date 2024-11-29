@@ -269,7 +269,7 @@ const Chat: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full">
+    <div className="flex flex-col h-screen w-full font-nunito">
       <GameMode onGameStart={handleGameStart} />
       <main className="flex justify-center basis-full p-6 bg-gray-200">
         <div className="flex flex-col gap-4 w-full max-w-screen-sm chat-container">
